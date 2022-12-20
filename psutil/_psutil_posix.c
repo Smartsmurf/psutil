@@ -25,6 +25,9 @@
     #include <ifaddrs.h>
 #endif
 
+#if defined(PSUTIL_CYGWIN)
+    #include <netdb.h>
+#endif
 #if defined(PSUTIL_LINUX)
     #include <netdb.h>
     #include <linux/types.h>

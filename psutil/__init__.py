@@ -87,6 +87,7 @@ from ._common import TimeoutExpired
 from ._common import ZombieProcess
 from ._common import memoize_when_activated
 from ._common import wrap_numbers as _wrap_numbers
+from ._common import CYGWIN  # NOQA
 from ._compat import PY3 as _PY3
 from ._compat import PermissionError
 from ._compat import ProcessLookupError
@@ -141,6 +142,13 @@ elif AIX:
     # via sys.modules.
     PROCFS_PATH = "/proc"
 
+elif CYGWIN:
+    from . import _pscygwin as _psplatform
+    
+    # This is public API and it will be retrieved from _pslinux.py
+    # via sys.modules.
+    PROCFS_PATH = "/proc"
+    
 else:  # pragma: no cover
     raise NotImplementedError('platform %s is not supported' % sys.platform)
 
@@ -170,7 +178,7 @@ __all__ = [
     "POWER_TIME_UNKNOWN", "POWER_TIME_UNLIMITED",
 
     "BSD", "FREEBSD", "LINUX", "NETBSD", "OPENBSD", "MACOS", "OSX", "POSIX",
-    "SUNOS", "WINDOWS", "AIX",
+    "SUNOS", "WINDOWS", "AIX", "CYGWIN"
 
     # "RLIM_INFINITY", "RLIMIT_AS", "RLIMIT_CORE", "RLIMIT_CPU", "RLIMIT_DATA",
     # "RLIMIT_FSIZE", "RLIMIT_LOCKS", "RLIMIT_MEMLOCK", "RLIMIT_NOFILE",
@@ -211,7 +219,7 @@ if hasattr(_psplatform.Process, "rlimit"):
 AF_LINK = _psplatform.AF_LINK
 
 __author__ = "Giampaolo Rodola'"
-__version__ = "5.9.5"
+__version__ = "5.9.4"
 version_info = tuple([int(num) for num in __version__.split('.')])
 
 _timer = getattr(time, 'monotonic', time.time)

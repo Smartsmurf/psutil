@@ -21,7 +21,12 @@ int PSUTIL_DEBUG = 0;
 // ====================================================================
 
 // PyPy on Windows
-#if defined(PSUTIL_WINDOWS) && defined(PYPY_VERSION)
+#if defined(PSUTIL_WINDOWS) && defined(PYPY_VERSION) || defined(PSUTIL_CYGWIN) 
+
+ULONG (WINAPI *_RtlNtStatusToDosErrorNoTeb) (
+    NTSTATUS status
+);
+
 #if !defined(PyErr_SetFromWindowsErrWithFilename)
 PyObject *
 PyErr_SetFromWindowsErrWithFilename(int winerr, const char *filename) {
@@ -184,7 +189,7 @@ struct mach_timebase_info PSUTIL_MACH_TIMEBASE_INFO;
 // --- Windows
 // ====================================================================
 
-#ifdef PSUTIL_WINDOWS
+#if defined(PSUTIL_WINDOWS) || defined(PSUTIL_CYGWIN) 
 #include <windows.h>
 
 // Needed to make these globally visible.
@@ -322,6 +327,7 @@ psutil_loadlibs() {
     // minimum requirement: Win 7
     GetLogicalProcessorInformationEx = psutil_GetProcAddressFromLib(
         "kernel32", "GetLogicalProcessorInformationEx");
+/*
     // minimum requirements: Windows Server Core
     WTSEnumerateSessionsW = psutil_GetProcAddressFromLib(
         "wtsapi32.dll", "WTSEnumerateSessionsW");
@@ -329,7 +335,7 @@ psutil_loadlibs() {
         "wtsapi32.dll", "WTSQuerySessionInformationW");
     WTSFreeMemory = psutil_GetProcAddressFromLib(
         "wtsapi32.dll", "WTSFreeMemory");
-
+*/
     PyErr_Clear();
     return 0;
 }
