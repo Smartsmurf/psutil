@@ -1739,42 +1739,42 @@ static struct module_state _state;
 
 #if PY_MAJOR_VERSION >= 3
 
-static int psutil_windows_traverse(PyObject *m, visitproc visit, void *arg) {
+static int psutil_cygwin_traverse(PyObject *m, visitproc visit, void *arg) {
     Py_VISIT(GETSTATE(m)->error);
     return 0;
 }
 
-static int psutil_windows_clear(PyObject *m) {
+static int psutil_cygwin_clear(PyObject *m) {
     Py_CLEAR(GETSTATE(m)->error);
     return 0;
 }
 
 static struct PyModuleDef moduledef = {
     PyModuleDef_HEAD_INIT,
-    "psutil_windows",
+    "psutil_cygwin",
     NULL,
     sizeof(struct module_state),
     PsutilMethods,
     NULL,
-    psutil_windows_traverse,
-    psutil_windows_clear,
+    psutil_cygwin_traverse,
+    psutil_cygwin_clear,
     NULL
 };
 
 #define INITERROR return NULL
 
-PyMODINIT_FUNC PyInit__psutil_windows(void)
+PyMODINIT_FUNC PyInit__psutil_cygwin(void)
 
 #else
 #define INITERROR return
-void init_psutil_windows(void)
+void init_psutil_cygwin(void)
 #endif
 {
     struct module_state *st = NULL;
 #if PY_MAJOR_VERSION >= 3
     PyObject *module = PyModule_Create(&moduledef);
 #else
-    PyObject *module = Py_InitModule("_psutil_windows", PsutilMethods);
+    PyObject *module = Py_InitModule("_psutil_cygwin", PsutilMethods);
 #endif
     if (module == NULL)
         INITERROR;
@@ -1785,7 +1785,7 @@ void init_psutil_windows(void)
         INITERROR;
 
     st = GETSTATE(module);
-    st->error = PyErr_NewException("_psutil_windows.Error", NULL, NULL);
+    st->error = PyErr_NewException("_psutil_cygwin.Error", NULL, NULL);
     if (st->error == NULL) {
         Py_DECREF(module);
         INITERROR;
@@ -1793,12 +1793,12 @@ void init_psutil_windows(void)
 
     // Exceptions.
     TimeoutExpired = PyErr_NewException(
-        "_psutil_windows.TimeoutExpired", NULL, NULL);
+        "_psutil_cygwin.TimeoutExpired", NULL, NULL);
     Py_INCREF(TimeoutExpired);
     PyModule_AddObject(module, "TimeoutExpired", TimeoutExpired);
 
     TimeoutAbandoned = PyErr_NewException(
-        "_psutil_windows.TimeoutAbandoned", NULL, NULL);
+        "_psutil_cygwin.TimeoutAbandoned", NULL, NULL);
     Py_INCREF(TimeoutAbandoned);
     PyModule_AddObject(module, "TimeoutAbandoned", TimeoutAbandoned);
 
@@ -1869,7 +1869,7 @@ void init_psutil_windows(void)
         module, "SERVICE_STOPPED", SERVICE_STOPPED);
     */
 
-    // ...for internal use in _psutil_windows.py
+    // ...for internal use in _psutil_cygwin.py
     PyModule_AddIntConstant(
         module, "INFINITE", INFINITE);
     PyModule_AddIntConstant(
